@@ -13,7 +13,7 @@ This configuration will add the following load balancer entries to the F5 BIG-IP
 It will also create DNS records using BIG-IP DNS
 
 * BIG-IP OpenShift API configuration [example](lb-ocp4-3-api.json)
-* [FAST template example](fast)
+* [FAST template example](fast/README.md)
 
 
 
