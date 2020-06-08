@@ -6,6 +6,8 @@
 * dns.yaml: DNS entries
 * infrastructure.yaml: LTM entries
 
+![Example Input](images/infra.png)
+
 ## Requirements
 
 * 1.1.0 >= F5 FAST
