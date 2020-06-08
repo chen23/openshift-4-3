@@ -1,5 +1,18 @@
 title: OpenShift Infrastructure
 description: Deployment of OpenShift Infrastructure resources (LTM only)
+definitions:
+  virtual_address:
+    title: "What IP address do you want to use for the virtual server?"
+    description: "This is the IP address that will be used for the API and Router."
+  bootstrap_address:
+    title: "What is the IP address of the bootstrap server"
+    description: "This is the IP address of the OpenShift bootstrap server."
+  master_address:
+    title: "What is the IP address of the OpenShift master server"
+    description: "This is the IP address of the OpenShift master server."
+  worker_address:
+    title: "What is the IP address of the OpenShift worker server"
+    description: "This is the IP address of the OpenShift worker server."
 parameters:
   virtual_address: 192.168.131.10
   bootstrap_address: 192.168.131.11

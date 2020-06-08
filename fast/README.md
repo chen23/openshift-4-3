@@ -18,6 +18,7 @@
 ## Building
 
 ```
+$ cd openshift
 $ zip shared.yaml dns.yaml infrastructure.yaml openshift.zip
 ```
 Upload the openshift.zip template set.

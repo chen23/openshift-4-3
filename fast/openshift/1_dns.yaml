@@ -1,5 +1,22 @@
 title: OpenShift DNS
 description: "OpenShift DNS resources; wildcard DNS for *.apps and individual host records"
+definitions:
+  base_domain: 
+    title: "Domain name used by OpenShift"
+    description: "DNS records will be api.[base_domain], etc..."
+  virtual_address:
+    title: "IP address that will be used for lab DNS listener (do not expose to Internet)" 
+    description: "This will create a recursive DNS listener (do not expose to Internet)"
+  bootstrap_address:
+    title: "IP address of OCP bootstrap server"
+    description: "This will create a static local DNS entry for boostrap.[base_domain]"
+  master_address:
+    title: "IP address of OCP master server"
+    description: "This will create a static local DNS entry for boostrap.[base_domain]"
+  worker_address:
+    title: "IP address of OCP worker server"
+    description: "This will create a static local DNS entry for boostrap.[base_domain]"
+
 parameters:
   base_domain: dc1.example.com
   virtual_address: 192.168.131.10

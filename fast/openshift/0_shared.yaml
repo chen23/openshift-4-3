@@ -1,10 +1,14 @@
 title: OpenShift Shared DNS Resources
 description: Shared resources required for creating DNS records
+definitions:
+  self_address:
+    title: "Self-IP of LTM device (could be on the same device)"
+    description: "This will be used as the target address of the BIG-IP DNS server object"
+  virtual_address:
+    title: "Virtual address of LTM that will be used by OCP API/router"
 parameters:
-  base_domain: dc1.example.com
   self_address: 192.168.1.201
   virtual_address: 192.168.131.10
-  external_dns_address: 192.168.1.1
 template: |
   {
     "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
