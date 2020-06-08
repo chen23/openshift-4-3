@@ -1,0 +1,134 @@
+title: OpenShift DNS
+description: "OpenShift DNS resources; wildcard DNS for *.apps and individual host records"
+parameters:
+  base_domain: dc1.example.com
+  virtual_address: 192.168.131.10
+  bootstrap_address: 192.168.131.11
+  master_address: 192.168.131.12
+  worker_address: 192.168.131.13
+  external_dns_address: 192.168.1.1
+template: |
+  {
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
+    "class": "AS3",
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.20.0",
+        "OpenShiftDNS": {
+            "class": "Tenant",
+            "OpenShift": {
+                "class": "Application",
+                "template": "generic",
+                "dns_cache": {
+                    "class": "DNS_Cache",
+                    "type": "transparent",
+                    "localZones": {
+                        "api.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "api.{{base_domain}}. IN A {{virtual_address}}"
+                            ]
+                        },
+                        "api-int.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "api-int.{{base_domain}}. IN A {{virtual_address}}"
+                            ]
+                        },                        
+                        "bootstrap.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "bootstrap.{{base_domain}}. IN A {{bootstrap_address}}"
+                            ]
+                        },
+                        "master.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "master.{{base_domain}}. IN A {{master_address}}"
+                            ]
+                        },
+                        "worker-0.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "worker-0.{{base_domain}}. IN A {{worker_address}}"
+                            ]
+                        }
+                    }
+                },
+                "dns_profile": {
+                    "class": "DNS_Profile",
+                    "cacheEnabled": true,
+                    "cache": {
+                        "use": "dns_cache"
+                    }
+                },
+                "dns_listener_udp_vs": {
+                    "class": "Service_UDP",
+                    "virtualAddresses": [
+                        "{{virtual_address}}"
+                    ],
+                    "virtualPort": 53,
+                    "profileDNS": {
+                        "use": "dns_profile"
+                    },
+                    "pool": "dns_resolver_pool",
+                    "shareAddresses": true
+                },
+                "dns_listener_tcp_vs": {
+                    "class": "Service_TCP",
+                    "virtualAddresses": [
+                        "{{virtual_address}}"
+                    ],
+                    "virtualPort": 53,
+                    "profileDNS": {
+                        "use": "dns_profile"
+                    },
+                    "pool": "dns_resolver_pool",
+                    "shareAddresses": true
+                },
+                "dns_resolver_pool": {
+                    "class": "Pool",
+                    "monitors": [
+                        "icmp"
+                    ],
+                    "members": [
+                        {
+                            "servicePort": 53,
+                            "serverAddresses": [
+                                "{{ external_dns_address }}"
+                            ]
+                        }
+                    ]
+                },
+                "dns01_pool": {
+                    "class": "GSLB_Pool",
+                    "members": [
+                        {
+                            "ratio": 10,
+                            "server": {
+                                "use": "/Common/Shared/OCPDNS"
+                            },
+                            "virtualServer": "0"
+                        }
+                    ],
+                    "resourceRecordType": "A"
+                },
+                "dns01_Domain": {
+                    "class": "GSLB_Domain",
+                    "domainName": "*.apps.{{ base_domain }}",
+                    "resourceRecordType": "A",
+                    "pools": [
+                        {
+                            "use": "dns01_pool"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+  }

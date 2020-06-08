@@ -1,0 +1,50 @@
+title: OpenShift Shared DNS Resources
+description: Shared resources required for creating DNS records
+parameters:
+  base_domain: dc1.example.com
+  self_address: 192.168.1.201
+  virtual_address: 192.168.131.10
+  external_dns_address: 192.168.1.1
+template: |
+  {
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
+    "class": "AS3",
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.20.0",
+        "Common": {
+            "class": "Tenant",
+            "Shared": {
+                "class": "Application",
+                "template": "shared",
+                "SharedVIP": {
+                    "class": "Service_Address",
+                    "virtualAddress": "{{virtual_address}}"
+                },
+                "DataCenterOne": {
+                    "class": "GSLB_Data_Center"
+                },
+                "OCPDNS": {
+                    "class": "GSLB_Server",
+                    "dataCenter": {
+                        "use": "DataCenterOne"
+                    },
+                    "devices": [
+                        {
+                            "address": "{{ self_address }}",
+                            "addressTranslation": "{{ self_address }}"
+                        }
+                    ],
+                    "virtualServers": [
+                        {
+                            "address": "{{virtual_address}}",
+                            "addressTranslation": "{{virtual_address}}",
+                            "addressTranslationPort": 443,
+                            "port": 443
+                        }
+                    ]
+                }
+            }
+                    }
+        }   
+  }

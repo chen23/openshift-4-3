@@ -1,0 +1,105 @@
+title: OpenShift Infrastructure
+description: Deployment of OpenShift Infrastructure resources (LTM only)
+parameters:
+  virtual_address: 192.168.131.10
+  bootstrap_address: 192.168.131.11
+  master_address: 192.168.131.12
+  worker_address: 192.168.131.13
+template: |
+  {
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
+    "class": "AS3",
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.20.0",
+        "OpenShiftInfrastructure": {
+            "class": "Tenant",
+            "Infrastructure": {
+                "class": "Application",
+                "template": "generic",
+                "frontend-openshift-router": {
+                    "class": "Service_TCP",
+                    "remark": "openshift-router",
+                    "virtualPort": 443,
+                    "virtualAddresses": [
+                        "{{ virtual_address }}"
+                    ],
+                    "persistenceMethods": [
+                        "source-address"
+                    ],
+                    "pool": "backend-openshift-router",
+                    "shareAddresses": true 
+                },
+                "backend-openshift-router": {
+                    "class": "Pool",
+                    "monitors": [
+                        "tcp"
+                    ],
+                    "members": [
+                        {
+                            "servicePort": 443,
+                            "serverAddresses": [
+                                "{{ worker_address }}"
+                            ],
+                            "shareNodes": true
+                        }
+                    ]
+                },
+                "frontend-openshift-api-server": {
+                    "class": "Service_TCP",
+                    "remark": "openshift-api-server",
+                    "virtualPort": 6443,
+                    "virtualAddresses": [
+                        "{{ virtual_address }}"
+                    ],
+                    "persistenceMethods": [
+                        "source-address"
+                    ],
+                    "pool": "backend-openshift-api-server",
+                    "shareAddresses": true
+                },
+                "backend-openshift-api-server": {
+                    "class": "Pool",
+                    "monitors": [
+                        "tcp"
+                    ],
+                    "members": [
+                        {
+                            "servicePort": 6443,
+                            "serverAddresses": 
+                            ["{{ bootstrap_address }}", "{{ master_address}}"]
+                            ,
+                            "shareNodes": true
+                        }
+                    ]
+                },
+                "frontend-machine-config-server": {
+                    "class": "Service_TCP",
+                    "remark": "machine-config-server",
+                    "virtualPort": 22623,
+                    "virtualAddresses": [
+                        "{{ virtual_address }}"
+                    ],
+                    "persistenceMethods": [
+                        "source-address"
+                    ],
+                    "pool": "backend-machine-config-server",
+                    "shareAddresses": true
+                },
+                "backend-machine-config-server": {
+                    "class": "Pool",
+                    "monitors": [
+                        "tcp"
+                    ],
+                    "members": [
+                        {
+                            "servicePort": 22623,
+                            "serverAddresses": ["{{ bootstrap_address }}", "{{ master_address}}"],
+                            "shareNodes": true
+                        }
+                    ]
+                }
+            }
+        }
+    }
+  }
