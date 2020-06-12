@@ -144,6 +144,109 @@ template: |
                             "use": "dns01_pool"
                         }
                     ]
+                },                
+                "dns02_pool": {
+                    "class": "GSLB_Pool",
+                    "members": [
+                        {
+                            "ratio": 10,
+                            "server": {
+                                "use": "/Common/Shared/OCPDNS"
+                            },
+                            "virtualServer": "1"
+                        }
+                    ],
+                    "resourceRecordType": "A"
+                },
+                "dns02_Domain": {
+                    "class": "GSLB_Domain",
+                    "domainName": "*.cisroutes.{{ base_domain }}",
+                    "resourceRecordType": "A",
+                    "pools": [
+                        {
+                            "use": "dns02_pool"
+                        }
+                    ]
+                },
+                "dns03_pool": {
+                    "class": "GSLB_Pool",
+                    "members": [
+                        {
+                            "ratio": 10,
+                            "server": {
+                                "use": "/Common/Shared/OCPDNS"
+                            },
+                            "virtualServer": "2"
+                        }
+                    ],
+                    "resourceRecordType": "A"
+                },
+                "dns03_Domain": {
+                    "class": "GSLB_Domain",
+                    "domainName": "my-frontend2.{{ base_domain }}",
+                    "resourceRecordType": "A",
+                    "pools": [
+                        {
+                            "use": "dns03_pool"
+                        }
+                    ]
+                },
+                "dns04_pool": {
+                    "class": "GSLB_Pool",
+                    "members": [
+                        {
+                            "ratio": 10,
+                            "server": {
+                                "use": "/Common/Shared/OCPDNS"
+                            },
+                            "virtualServer": "3"
+                        }
+                    ],
+                    "resourceRecordType": "A"
+                },
+                "dns04_Domain": {
+                    "class": "GSLB_Domain",
+                    "domainName": "*.ingress.{{ base_domain }}",
+                    "resourceRecordType": "A",
+                    "pools": [
+                        {
+                            "use": "dns04_pool"
+                        }
+                    ]
+                },
+                "dns05_pool": {
+                    "class": "GSLB_Pool",
+                    "members": [
+                        {
+                            "ratio": 10,
+                            "server": {
+                                "use": "/Common/Shared/OCPDNS"
+                            },
+                            "virtualServer": "4"
+                        }
+                    ],
+                    "resourceRecordType": "A",
+                    "monitors": [
+                        {
+                            "use": "dns05_monitor"
+                        }
+                    ]
+                },
+                "dns05_monitor": {
+                    "class": "GSLB_Monitor",
+                    "monitorType": "http",
+                    "send": "GET /txt HTTP/1.1\r\nhost: www.apps.{{ base_domain }}\r\nconnection: close\r\n\r\n",
+                    "receive": "www"
+                },
+                "dns05_Domain": {
+                    "class": "GSLB_Domain",
+                    "domainName": "www.apps.{{ base_domain }}",
+                    "resourceRecordType": "A",
+                    "pools": [
+                        {
+                            "use": "dns05_pool"
+                        }
+                    ]
                 }
             }
         }

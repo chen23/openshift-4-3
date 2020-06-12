@@ -45,6 +45,30 @@ template: |
                             "addressTranslation": "{{virtual_address}}",
                             "addressTranslationPort": 443,
                             "port": 443
+                        },
+                                                {
+                            "address": "{{virtual_address}}0",
+                            "addressTranslation": "{{virtual_address}}0",
+                            "addressTranslationPort": 80,
+                            "port": 80
+                        },
+                        {
+                            "address": "{{virtual_address}}1",
+                            "addressTranslation": "{{virtual_address}}1",
+                            "addressTranslationPort": 80,
+                            "port": 80
+                        },
+                        {
+                            "address": "{{virtual_address}}2",
+                            "addressTranslation": "{{virtual_address}}2",
+                            "addressTranslationPort": 80,
+                            "port": 80
+                        },
+                        {
+                            "address": "{{virtual_address}}",
+                            "addressTranslation": "{{virtual_address}}",
+                            "addressTranslationPort": 80,
+                            "port": 80
                         }
                     ]
                 }
@@ -52,3 +76,4 @@ template: |
                     }
         }   
   }
+
