@@ -7,17 +7,19 @@ definitions:
   bootstrap_address:
     title: "What is the IP address of the bootstrap server"
     description: "This is the IP address of the OpenShift bootstrap server."
-  master_address:
-    title: "What is the IP address of the OpenShift master server"
-    description: "This is the IP address of the OpenShift master server."
-  worker_address:
-    title: "What is the IP address of the OpenShift worker server"
-    description: "This is the IP address of the OpenShift worker server."
+  master_addresses:
+    title: "What is the IP address of the OpenShift master server(s)"
+    description: "This is the IP address of the OpenShift master server(s)."
+    type: array
+  worker_addresses:
+    title: "What is the IP address of the OpenShift worker server(s)"
+    description: "This is the IP address of the OpenShift worker server(s)."
+    type: array
 parameters:
   virtual_address: 192.168.131.10
   bootstrap_address: 192.168.131.11
-  master_address: 192.168.131.12
-  worker_address: 192.168.131.13
+  master_addresses: ["192.168.131.12","192.168.131.112","192.168.131.212"]
+  worker_addresses: ["192.168.131.13"]
 template: |
   {
     "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
@@ -51,9 +53,9 @@ template: |
                     "members": [
                         {
                             "servicePort": 443,
-                            "serverAddresses": [
-                                "{{ worker_address }}"
-                            ],
+                            "serverAddresses": 
+                                {{ worker_addresses }}
+                            ,
                             "shareNodes": true
                         }
                     ]
@@ -80,8 +82,12 @@ template: |
                         {
                             "servicePort": 6443,
                             "serverAddresses": 
-                            ["{{ bootstrap_address }}", "{{ master_address}}"]
-                            ,
+                            ["{{ bootstrap_address }}"],
+                            "shareNodes": true
+                        },
+                        {
+                            "servicePort":6443,
+                            "serverAddresses": {{ master_addresses }},
                             "shareNodes": true
                         }
                     ]
@@ -107,7 +113,12 @@ template: |
                     "members": [
                         {
                             "servicePort": 22623,
-                            "serverAddresses": ["{{ bootstrap_address }}", "{{ master_address}}"],
+                            "serverAddresses": ["{{ bootstrap_address }}"],
+                            "shareNodes": true
+                        },
+                        {
+                            "servicePort":6443,
+                            "serverAddresses": {{ master_addresses }},
                             "shareNodes": true
                         }
                     ]
