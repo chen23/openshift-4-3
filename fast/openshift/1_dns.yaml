@@ -13,6 +13,12 @@ definitions:
   master_address:
     title: "IP address of OCP master server"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
+  master1_address:
+    title: "IP address of 2nd OCP master server"
+    description: "This will create a static local DNS entry for boostrap.[base_domain]"
+  master2_address:
+    title: "IP address of 3rd OCP master server"
+    description: "This will create a static local DNS entry for boostrap.[base_domain]"
   worker_address:
     title: "IP address of OCP worker server"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
@@ -22,6 +28,8 @@ parameters:
   virtual_address: 192.168.131.10
   bootstrap_address: 192.168.131.11
   master_address: 192.168.131.12
+  master1_address: 192.168.131.112
+  master2_address: 192.168.131.212
   worker_address: 192.168.131.13
   external_dns_address: 192.168.1.1
 template: |
@@ -68,6 +76,27 @@ template: |
                                 "master.{{base_domain}}. IN A {{master_address}}"
                             ]
                         },
+                        "etcd-0.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "etcd-0.{{base_domain}}. IN A {{master_address}}"
+                            ]
+                        },
+                        "etcd-1.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "etcd-1.{{base_domain}}. IN A {{master1_address}}"
+                            ]
+                        },
+                        "etcd-2.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "etcd-2.{{base_domain}}. IN A {{master2_address}}"
+                            ]
+                        },
                         "worker-0.{{base_domain}}": {
                             "class": "DNS_Zone_Local",
                             "type": "static",
@@ -110,9 +139,6 @@ template: |
                 },
                 "dns_resolver_pool": {
                     "class": "Pool",
-                    "monitors": [
-                        "icmp"
-                    ],
                     "members": [
                         {
                             "servicePort": 53,
