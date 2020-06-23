@@ -6,9 +6,18 @@ definitions:
     description: "This will be used as the target address of the BIG-IP DNS server object"
   virtual_address:
     title: "Virtual address of LTM that will be used by OCP API/router"
+  virtual_address1:
+    title: "Virtual address of LTM that will be used by CIS router"
+  virtual_address2:
+    title: "Virtual address of LTM that will be used by Ingress"
+  virtual_address3:
+    title: "Virtual address of LTM that will be used by www"    
 parameters:
   self_address: 192.168.1.201
   virtual_address: 192.168.131.10
+  virtual_address1: 192.168.131.100
+  virtual_address2: 192.168.131.101
+  virtual_address3: 192.168.131.102
 template: |
   {
     "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
@@ -47,20 +56,20 @@ template: |
                             "port": 443
                         },
                                                 {
-                            "address": "{{virtual_address}}0",
-                            "addressTranslation": "{{virtual_address}}0",
+                            "address": "{{virtual_address1}}",
+                            "addressTranslation": "{{virtual_address1}}",
                             "addressTranslationPort": 80,
                             "port": 80
                         },
                         {
-                            "address": "{{virtual_address}}1",
-                            "addressTranslation": "{{virtual_address}}1",
+                            "address": "{{virtual_address2}}",
+                            "addressTranslation": "{{virtual_address2}}",
                             "addressTranslationPort": 80,
                             "port": 80
                         },
                         {
-                            "address": "{{virtual_address}}2",
-                            "addressTranslation": "{{virtual_address}}2",
+                            "address": "{{virtual_address3}}",
+                            "addressTranslation": "{{virtual_address3}}",
                             "addressTranslationPort": 80,
                             "port": 80
                         },
