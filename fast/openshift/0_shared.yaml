@@ -9,9 +9,9 @@ definitions:
   virtual_address1:
     title: "Virtual address of LTM that will be used by CIS router"
   virtual_address2:
-    title: "Virtual address of LTM that will be used by Ingress"
+    title: "Virtual address of LTM that will be used by my-frontend2"
   virtual_address3:
-    title: "Virtual address of LTM that will be used by www"    
+    title: "Virtual address of LTM that will be used by Ingress"    
 parameters:
   self_address: 192.168.1.201
   virtual_address: 192.168.131.10
