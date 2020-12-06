@@ -73,10 +73,16 @@ template: |
                     "pool": "backend-openshift-api-server",
                     "shareAddresses": true
                 },
+                "backend-openshift-api-monitor": {
+                    "class": "Monitor",
+                    "monitorType": "https",
+                    "send":"GET /readyz HTTP/1.1\r\nhost:localhost\r\nconnection:close\r\n\r\n",
+                    "receive": "ok"
+                },
                 "backend-openshift-api-server": {
                     "class": "Pool",
                     "monitors": [
-                        "tcp"
+                        {"use":"backend-openshift-api-monitor"}
                     ],
                     "members": [
                         {
