@@ -8,12 +8,12 @@ definitions:
     title: "What is the IP address of the bootstrap server"
     description: "This is the IP address of the OpenShift bootstrap server."
   master_addresses:
-    title: "What is the IP address of the OpenShift master server(s)"
-    description: "This is the IP address of the OpenShift master server(s)."
+    title: "What is the IP address of the OpenShift control-plane server(s)"
+    description: "This is the IP address of the OpenShift control-plane server(s)."
     type: array
   worker_addresses:
-    title: "What is the IP address of the OpenShift worker server(s)"
-    description: "This is the IP address of the OpenShift worker server(s)."
+    title: "What is the IP address of the OpenShift node(s)"
+    description: "This is the IP address of the OpenShift node(s)."
     type: array
 parameters:
   virtual_address: 192.168.131.10
