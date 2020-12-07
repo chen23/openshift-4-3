@@ -11,16 +11,16 @@ definitions:
     title: "IP address of OCP bootstrap server"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
   master_address:
-    title: "IP address of OCP master server"
+    title: "IP address of OCP control-plane server"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
   master1_address:
-    title: "IP address of 2nd OCP master server"
+    title: "IP address of 2nd OCP control-plane server"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
   master2_address:
-    title: "IP address of 3rd OCP master server"
+    title: "IP address of 3rd OCP control-plane server"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
   worker_address:
-    title: "IP address of OCP worker server"
+    title: "IP address of OCP node"
     description: "This will create a static local DNS entry for boostrap.[base_domain]"
 
 parameters:
@@ -113,10 +113,6 @@ template: |
                         "use": "dns_cache"
                     }
                 },
-                "dns_irule": {
-                    "class":"iRule",
-                    "iRule": "\nwhen DNS_REQUEST {\n    #log local0. \"\\[DNS::question name\\]: [DNS::question name], \\[DNS::question class\\]: [DNS::question class], \\[DNS::question type\\]: [DNS::question type]\"\n    set ttl 300\n    if { [string tolower [DNS::question name]] starts_with \"_etcd-server-ssl._tcp.{{base_domain}}\" } then {\n        if { [DNS::question type] equals \"SRV\" } then {\n            DNS::answer insert \"_etcd-server-ssl._tcp.{{base_domain}}. $ttl IN [DNS::question type] 1 0 2380 etcd-0.{{base_domain}}\"\n            DNS::answer insert \"_etcd-server-ssl._tcp.{{base_domain}}. $ttl IN [DNS::question type] 1 0 2380 etcd-1.{{base_domain}}\"\n            DNS::answer insert \"_etcd-server-ssl._tcp.{{base_domain}}. $ttl IN [DNS::question type] 1 0 2380 etcd-2.{{base_domain}}\"\n            DNS::return\n        }\n    }\n}  \n"
-                },
                 "dns_listener_udp_vs": {
                     "class": "Service_UDP",
                     "virtualAddresses": [
@@ -127,8 +123,7 @@ template: |
                         "use": "dns_profile"
                     },
                     "pool": "dns_resolver_pool",
-                    "shareAddresses": true,
-                    "iRules": ["dns_irule"]
+                    "shareAddresses": true
                 },
                 "dns_listener_tcp_vs": {
                     "class": "Service_TCP",
