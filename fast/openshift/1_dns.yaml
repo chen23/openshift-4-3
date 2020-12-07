@@ -69,11 +69,25 @@ template: |
                                 "bootstrap.{{base_domain}}. IN A {{bootstrap_address}}"
                             ]
                         },
-                        "master.{{base_domain}}": {
+                        "control-plane-0.{{base_domain}}": {
                             "class": "DNS_Zone_Local",
                             "type": "static",
                             "records": [
-                                "master.{{base_domain}}. IN A {{master_address}}"
+                                "control-plane-0.{{base_domain}}. IN A {{master_address}}"
+                            ]
+                        },
+                       "control-plane-1.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "control-plane-1.{{base_domain}}. IN A {{master1_address}}"
+                            ]
+                        },
+                        "control-plane-2.{{base_domain}}": {
+                            "class": "DNS_Zone_Local",
+                            "type": "static",
+                            "records": [
+                                "control-plane-2.{{base_domain}}. IN A {{master2_address}}"
                             ]
                         },
                         "etcd-0.{{base_domain}}": {
@@ -135,8 +149,7 @@ template: |
                         "use": "dns_profile"
                     },
                     "pool": "dns_resolver_pool",
-                    "shareAddresses": true,
-                    "iRules": ["dns_irule"]
+                    "shareAddresses": true
                 },
                 "dns_resolver_pool": {
                     "class": "Pool",
